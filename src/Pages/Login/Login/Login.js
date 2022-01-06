@@ -10,10 +10,14 @@ const Login = () => {
     const history = useHistory();
     const location = useLocation();
 
-    const { user, signInUsingGoogle, loginUser, isLoading, authError } = useAuth();
+    const { user, signInUsingGoogle, signInUsingGithub, loginUser, isLoading, authError } = useAuth();
 
     const handleGoogleLogin = () => {
         signInUsingGoogle(location, history)
+    }
+
+    const handleGithubLogin = () => {
+        signInUsingGithub(location, history)
     }
 
     const handleOnChange = e => {
@@ -64,7 +68,8 @@ const Login = () => {
         <div className="mt-4">
             <Link to="/register">Don't have account?</Link>
             <h5>Or</h5>
-            <button onClick={handleGoogleLogin} className="btn btn-warning">Google Sign In</button>
+            <button onClick={handleGoogleLogin} className="btn btn-warning" style={{marginRight: '5px'}}>Google Sign In</button>
+            <button onClick={handleGithubLogin} className="btn btn-primary">Github Sign In</button>
         </div>
     </section>
     <Footer></Footer>

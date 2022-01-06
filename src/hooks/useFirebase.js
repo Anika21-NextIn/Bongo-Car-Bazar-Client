@@ -1,4 +1,4 @@
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, GithubAuthProvider } from "firebase/auth";
 import { useState, useEffect } from 'react';
 import initializeAuthentication from './../Pages/Login/Firebase/firebase.init';
 
@@ -12,6 +12,7 @@ const useFirebase = () => {
 
     const auth = getAuth();
     const googleProvider = new GoogleAuthProvider();
+    const githubProvider = new GithubAuthProvider();
 
     const registerUser = (email, password, name, history) => {
         setIsLoading(true);
@@ -42,6 +43,20 @@ const useFirebase = () => {
         setIsLoading(true);
         signInWithPopup(auth, googleProvider)
             .then((result) => {
+                const user = result.user;
+                saveUser(user.email, user.displayName, 'PUT');
+                setAuthError('');
+                const destination = location?.state?.from || '/home';
+                history.replace(destination);
+            }).catch((error) => {
+                setAuthError(error.message);
+            }).finally(() => setIsLoading(false));
+    }
+    
+    const signInUsingGithub = (location, history) => {
+        setIsLoading(true);
+        signInWithPopup(auth, githubProvider)
+            .then(result => {
                 const user = result.user;
                 saveUser(user.email, user.displayName, 'PUT');
                 setAuthError('');
@@ -112,6 +127,7 @@ const useFirebase = () => {
         authError,
         registerUser,
         signInUsingGoogle,
+        signInUsingGithub,
         logOut,
         loginUser
     }
